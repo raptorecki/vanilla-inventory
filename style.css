@@ -127,6 +127,7 @@ details[open] > summary::before {
     flex-direction: column;
     flex: 1;
     min-width: 200px;
+    margin-bottom: 15px;
 }
 
 .form-group.form-group-name {
@@ -164,6 +165,12 @@ details[open] > summary::before {
     cursor: pointer;
     font-size: 1em;
     font-weight: 600; /* Standardized font-weight */
+    vertical-align: middle;
+    box-sizing: border-box;
+    line-height: 1;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
 }
 .form-actions button:hover {
     background-color: #4ab867;
@@ -178,6 +185,27 @@ details[open] > summary::before {
     font-size: 1em;
     font-weight: 600; /* Standardized font-weight */
     transition: all 0.2s ease;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    line-height: 1;
+    text-align: center;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: nowrap; /* Changed from wrap to nowrap */
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-row .form-group {
+    flex: 0 0 calc(16.666% - 15px); /* Adjusted flex-basis */
+    /* Removed min-width */
+}
+
+.form-group-full-width {
+    width: 100%;
 }
 
 .form-actions .button:hover {
