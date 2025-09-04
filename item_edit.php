@@ -273,7 +273,7 @@ if ($item) {
 
 <?php if ($item): ?>
     <!-- Updated Form Structure with proper grid layout -->
-    <form method="POST" action="item_edit.php?id=<?= htmlspecialchars($item['id']) ?>" class="form-container" enctype="multipart/form-data" onsubmit="document.getElementById('documentation_html').value = quill.root.innerHTML;">
+    <form method="POST" action="item_edit.php?id=<?= htmlspecialchars($item['id']) ?>" class="form-container" enctype="multipart/form-data" onsubmit="console.log(quill.root.innerHTML); document.getElementById('documentation_html').value = quill.root.innerHTML;">
         <input type="hidden" name="update_item" value="1">
         
         <!-- Name field - Full width at top -->
@@ -382,8 +382,9 @@ if ($item) {
 <link href="js/quill/quill.snow.css" rel="stylesheet">
 <script src="js/quill/quill.js"></script>
 <script>
+    var quill;
     document.addEventListener('DOMContentLoaded', function() {
-        var quill = new Quill('#editor-container', {
+        quill = new Quill('#editor-container', {
             theme: 'snow',
             modules: {
                 toolbar: [
@@ -461,7 +462,7 @@ if ($item) {
         }
 
         // Initial tags
-        const initialTags = '<?= addslashes($item['tags'] ?? '') ?>'.split(', ').filter(t => t);
+        const initialTags = `<?= addslashes($item['tags'] ?? '') ?>`.split(', ').filter(t => t);
         initialTags.forEach(createTagElement);
 
         tagInput.addEventListener('input', () => {

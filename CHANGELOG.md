@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2025-09-05
+### Fixed
+- Bug: Corrected an issue in `item_edit.php` where the Quill editor was not retaining saved content.
+- Bug: Resolved a problem in `categories.php` that caused incorrect display of category IDs, including duplicates and omissions.
+### Added
+- Feature: The main image is now displayed at full size in `item_edit.php`.
+
 ## [1.0.3] - 2025-09-04
 ### Added
 - Feature: Implemented main image import functionality in item_edit.php, allowing upload from file or URL.

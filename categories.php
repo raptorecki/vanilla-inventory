@@ -116,16 +116,45 @@ if (isset($_GET['delete_subcategory'])) {
     }
 }
 
-// Fetch all categories and their subcategories
+// Fetch all categories and their subcategories using a single, efficient query
 try {
-    $stmt = $pdo->query("SELECT * FROM inv_categories ORDER BY name ASC");
-    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "
+        SELECT 
+            c.id AS category_id, 
+            c.name AS category_name,
+            s.id AS subcategory_id,
+            s.name AS subcategory_name
+        FROM 
+            inv_categories c
+        LEFT JOIN 
+            inv_subcategories s ON c.id = s.category_id
+        ORDER BY 
+            c.name, s.name
+    ";
+    $stmt = $pdo->query($sql);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($categories as &$category) {
-        $stmt = $pdo->prepare("SELECT * FROM inv_subcategories WHERE category_id = ? ORDER BY name ASC");
-        $stmt->execute([$category['id']]);
-        $category['subcategories'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $categories = [];
+    foreach ($results as $row) {
+        $category_id = $row['category_id'];
+        if (!isset($categories[$category_id])) {
+            $categories[$category_id] = [
+                'id' => $category_id,
+                'name' => $row['category_name'],
+                'subcategories' => []
+            ];
+        }
+
+        if ($row['subcategory_id']) {
+            $categories[$category_id]['subcategories'][] = [
+                'id' => $row['subcategory_id'],
+                'name' => $row['subcategory_name']
+            ];
+        }
     }
+    // Since we used category_id as key, we just need the values
+    $categories = array_values($categories);
+
 } catch (PDOException $e) {
     $form_error = "Database Error: " . $e->getMessage();
 }
