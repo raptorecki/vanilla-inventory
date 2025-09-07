@@ -29,6 +29,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <nav>
     <a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : '' ?>">Home</a>
     <a href="inventory.php" class="<?= $current_page == 'inventory.php' ? 'active' : '' ?>">Inventory</a>
+    <a href="components.php" class="<?= $current_page == 'components.php' ? 'active' : '' ?>">Components</a>
     <a href="categories.php" class="<?= $current_page == 'categories.php' ? 'active' : '' ?>">Categories</a>
     <a href="tags.php" class="<?= $current_page == 'tags.php' ? 'active' : '' ?>">Tags</a>
     <a href="stats.php" class="<?= $current_page == 'stats.php' ? 'active' : '' ?>">Stats</a>
