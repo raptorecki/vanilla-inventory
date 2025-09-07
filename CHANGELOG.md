@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+
+## [1.0.7] - 2025-09-07
+### Added
+- Feature: Created `inv_details` table to store additional information for specific components.
+- Feature: Implemented `components_details_edit.php` for editing component-specific details.
+- Feature: Added "Edit Details" link to `components.php` for relevant items.
+### Changed
+- In `components.php` for "Transistors and MOSFET's", replaced "Price", "Source", "Added", and "Modified" columns with the new detailed fields.
+### Fixed
+- Bug: Corrected PHP parse error in `components.php` due to missing semicolon.
+
+
 ## [1.0.6] - 2025-09-07
 ### Added
 - Feature: Created a new "Components" page to display specific component categories.

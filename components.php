@@ -2,7 +2,7 @@
 require 'header.php';
 
 // --- Sorting Logic ---
-$allowed_columns = ['id', 'name', 'subcategory', 'tags', 'quantity', 'price', 'number_used', 'source_link', 'date_added', 'date_modified'];
+$allowed_columns = ['id', 'name', 'subcategory', 'tags', 'quantity', 'number_used', 'description', 'voltage', 'current', 'pinout', 'usecase', 'notes'];
 $sort_column = $_GET['sort'] ?? 'name';
 if (!in_array($sort_column, $allowed_columns)) $sort_column = 'name';
 $sort_direction = strtolower($_GET['dir'] ?? 'asc');
@@ -22,7 +22,7 @@ try {
     if ($category_name) {
         // 2. Get the subcategory names from inv_subcategories where id is in (24, 50, 119, 120)
         $subcategory_ids = [24, 50, 119, 120];
-        $placeholders = rtrim(str_repeat('?,', count($subcategory_ids)), ',');
+        $placeholders = rtrim(str_repeat('?,' , count($subcategory_ids)), ',');
         
         $stmt = $pdo->prepare("SELECT name FROM inv_subcategories WHERE id IN ($placeholders)");
         $stmt->execute($subcategory_ids);
@@ -30,8 +30,12 @@ try {
 
         if ($subcategory_names) {
             // 3. Use the fetched category and subcategory names to query the inv_items table
-            $placeholders = rtrim(str_repeat('?,', count($subcategory_names)), ',');
-            $sql = "SELECT * FROM inv_items WHERE category = ? AND subcategory IN ($placeholders) ORDER BY {$sort_column} {$sort_direction}";
+            $placeholders = rtrim(str_repeat('?,' , count($subcategory_names)), ',');
+            $sql = "SELECT i.*, d.description, d.voltage, d.current, d.pinout, d.usecase, d.notes
+                    FROM inv_items i
+                    LEFT JOIN inv_details d ON i.id = d.item_id
+                    WHERE i.category = ? AND i.subcategory IN ($placeholders)
+                    ORDER BY {$sort_column} {$sort_direction}";
             
             $stmt = $pdo->prepare($sql);
             $params = array_merge([$category_name], $subcategory_names);
@@ -59,9 +63,9 @@ try {
                 <tr>
                     <?php
                     $headers = [
-                        'id' => 'ID', 'name' => 'Name', 'subcategory' => 'Subcategory', 'tags' => 'Tags', 'quantity' => 'Quantity',
-                        'price' => 'Price', 'number_used' => 'Used', 'source_link' => 'Source',
-                        'date_added' => 'Added', 'date_modified' => 'Modified', 'actions' => 'Actions'
+                        'id' => 'ID', 'name' => 'Name', 'subcategory' => 'Subcategory', 'tags' => 'Tags', 'quantity' => 'Quantity', 'number_used' => 'Used',
+                        'description' => 'Description', 'voltage' => 'Voltage', 'current' => 'Current', 'pinout' => 'Pinout', 'usecase' => 'Usecase', 'notes' => 'Notes',
+                        'actions' => 'Actions'
                     ];
                     foreach ($headers as $col => $title):
                         $is_sorted_column = ($sort_column === $col);
@@ -73,19 +77,21 @@ try {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($items as $item): ?>
+                <?php foreach ($items as $item):
+                    // Ensure the 'actions' case is correctly formatted and terminated with a semicolon
+                    ?>
                     <tr>
-                        <?php foreach ($headers as $col => $title): ?>
+                        <?php foreach ($headers as $col => $title):
+                            // Ensure the 'actions' case is correctly formatted and terminated with a semicolon
+                            ?>
                             <td>
                                 <?php
                                 switch ($col) {
-                                    case 'source_link':
-                                        echo !empty($item[$col]) ? '<a href="' . htmlspecialchars($item[$col]) . '" target="_blank">Link</a>' : '—';
-                                        break;
                                     case 'name':
                                         echo '<a href="item_details.php?id=' . htmlspecialchars($item['id']) . '">' . htmlspecialchars($item['name']) . '</a>';
                                         break;
                                     case 'actions':
+                                        echo '<a href="components_details_edit.php?item_id=' . htmlspecialchars($item['id']) . '">Edit Details</a> | ';
                                         echo '<a href="item_edit.php?id=' . htmlspecialchars($item['id']) . '">Edit</a> | ';
                                         echo '<a href="item_delete.php?id=' . htmlspecialchars($item['id']) . '" onclick="return confirm(\'Are you sure you want to delete this item?\');">Delete</a>';
                                         break;
