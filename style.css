@@ -89,6 +89,7 @@ h2 {
 details {
     background-color: #1f1f1f; border: 1px solid #333;
     border-radius: 5px; margin-bottom: 25px;
+    overflow-x: auto; /* Ensures horizontal scrollbar for overflowing content */
 }
 summary {
     padding: 15px;
@@ -223,13 +224,15 @@ table {
     margin-top: 20px;
     font-size: 0.9em;
     padding: 0 15px; /* Add horizontal padding to the table */
+    table-layout: fixed; /* Forces table to fit within its container */
 }
 
 th, td {
     border: 1px solid #333;
     padding: 12px 15px;
     text-align: left;
-    white-space: nowrap; /* Prevents text from wrapping */
+    white-space: normal; /* Allows text to wrap */
+    word-break: break-word; /* Forces long words to break and wrap */
 }
 
 thead th {

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [1.0.8] - 2025-09-07
+### Added
+- Feature: Added "Development Boards" table to `components.php` (category ID 1, no subcategory limitation).
+### Changed
+- In `components.php`, refactored table rendering to be more dynamic based on `$category_configs`.
+- In `components.php`, "Others" table now displays the same detailed information as "Transistors and MOSFET's".
+- In `components.php`, "Edit Details" link now appears for all detailed categories.
+- In `components.php`, removed "Subcategory" column from all tables.
+- In `components.php`, made folding tables folded by default.
+### Fixed
+- Bug: Attempted to fix UI bug in `components.php` where table elements went beyond the unfolded box by adding `white-space: normal;`, `word-break: break-word;`, `table-layout: fixed;` to table styles, and `overflow-x: auto;` to `details` element.
+
+
 ## [1.0.7] - 2025-09-07
 ### Added
 - Feature: Created `inv_details` table to store additional information for specific components.
