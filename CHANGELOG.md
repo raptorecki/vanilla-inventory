@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [1.0.9] - 2025-09-07
+### Added
+- Feature: Added "Diodes" table to `components.php` (category ID 6, subcategories 51, 52).
+### Fixed
+- Bug: Confirmed "Zener" subcategory display issue was due to database typo, now resolved by user.
+
+
 ## [1.0.8] - 2025-09-07
 ### Added
 - Feature: Added "Development Boards" table to `components.php` (category ID 1, no subcategory limitation).

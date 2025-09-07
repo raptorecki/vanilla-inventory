@@ -23,6 +23,16 @@ $category_configs = [
         ],
         'sql_join_details' => true // Indicates if inv_details should be joined
     ],
+    'Diodes' => [
+        'category_id' => 6,
+        'subcategory_ids' => [51, 52],
+        'headers' => [
+            'id' => 'ID', 'name' => 'Name', 'tags' => 'Tags', 'quantity' => 'Quantity', 'number_used' => 'Used',
+            'description' => 'Description', 'voltage' => 'Voltage', 'current' => 'Current', 'pinout' => 'Pinout', 'usecase' => 'Usecase', 'notes' => 'Notes',
+            'actions' => 'Actions'
+        ],
+        'sql_join_details' => true
+    ],
     'Others' => [
         'category_id' => 9, // Assuming 'Others' also falls under category 9 for now, adjust if needed
         'subcategory_ids' => [117, 118, 121, 114, 115, 116],
@@ -127,33 +137,31 @@ try {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($data['items'] as $item): ?>
-                            <tr>
-                                <?php foreach ($headers as $col => $header_title): ?>
-                                    <td>
-                                        <?php
-                                        switch ($col) {
-                                            case 'name':
-                                                echo '<a href="item_details.php?id=' . htmlspecialchars($item['id']) . '">' . htmlspecialchars($item['name']) . '</a>';
-                                                break;
-                                            case 'source_link': // Only for default headers
-                                                echo !empty($item[$col]) ? '<a href="' . htmlspecialchars($item[$col]) . '" target="_blank">Link</a>' : '—';
-                                                break;
-                                            case 'actions':
-                                                // Conditionally show "Edit Details" link only for Transistors and MOSFET's
-                                                echo '<a href="components_details_edit.php?item_id=' . htmlspecialchars($item['id']) . '">Edit Details</a> | ';
-                                                echo '<a href="item_edit.php?id=' . htmlspecialchars($item['id']) . '">Edit</a> | ';
-                                                echo '<a href="item_delete.php?id=' . htmlspecialchars($item['id']) . '" onclick="return confirm(\'Are you sure you want to delete this item?\');">Delete</a>';
-                                                break;
-                                            default:
-                                                echo htmlspecialchars($item[$col] ?? '—');
-                                                break;
-                                        }
-                                        ?>
-                                    </td>
-                                <?php endforeach; ?>
-                            </tr>
-                        <?php endforeach; ?>
+                        <?php foreach ($data['items'] as $item):
+                            echo '<tr>';
+                            foreach ($headers as $col => $header_title):
+                                echo '<td>';
+                                switch ($col) {
+                                    case 'name':
+                                        echo '<a href="item_details.php?id=' . htmlspecialchars($item['id']) . '">' . htmlspecialchars($item['name']) . '</a>';
+                                        break;
+                                    case 'source_link': // Only for default headers
+                                        echo !empty($item[$col]) ? '<a href="' . htmlspecialchars($item[$col]) . '" target="_blank">Link</a>' : '—';
+                                        break;
+                                    case 'actions':
+                                        // Conditionally show "Edit Details" link only for Transistors and MOSFET's
+                                        echo '<a href="components_details_edit.php?item_id=' . htmlspecialchars($item['id']) . '">Edit Details</a> | ';
+                                        echo '<a href="item_edit.php?id=' . htmlspecialchars($item['id']) . '">Edit</a> | ';
+                                        echo '<a href="item_delete.php?id=' . htmlspecialchars($item['id']) . '" onclick="return confirm(\'Are you sure you want to delete this item?\');">Delete</a>';
+                                        break;
+                                    default:
+                                        echo htmlspecialchars($item[$col] ?? '—');
+                                        break;
+                                }
+                                echo '</td>';
+                            endforeach;
+                            echo '</tr>';
+                        endforeach; ?>
                     </tbody>
                 </table>
             <?php endif; ?>
