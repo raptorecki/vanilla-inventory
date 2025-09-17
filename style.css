@@ -351,19 +351,22 @@ select:focus, input[type="number"]:focus {
     padding: 15px;
     border-radius: 8px;
     background-color: #1f1f1f;
+    text-align: center; /* Center the image-display-wrapper */
 }
 
-.image-preview-wrapper {
-    margin-top: 15px;
-    text-align: center;
-    position: relative;
+.image-display-wrapper {
+    display: inline-block; /* Allow it to shrink-wrap content */
+    max-width: 100%; /* Ensure it doesn't overflow its parent */
+    margin-top: 15px; /* Add some space above the image */
 }
 
 .image-preview {
-    max-width: 100%;
+    max-width: 100%; /* Ensure image scales down if larger than its container */
+    height: auto;    /* Maintain aspect ratio */
     border-radius: 4px;
     border: 1px solid #333;
     object-fit: contain;
+    vertical-align: middle; /* Remove extra space below image */
 }
 
 .remove-image-btn {

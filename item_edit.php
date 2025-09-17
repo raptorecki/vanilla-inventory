@@ -232,14 +232,13 @@ if ($item) {
             <input type="file" id="main_image_file" name="main_image_file" accept="image/*">
             <p style="text-align: center; margin: 10px 0; color: #c0c0c0;">OR</p>
             <input type="url" id="main_image_url" name="main_image_url" placeholder="Enter image URL">
-            <?php if (!empty($item['image'])): ?>
-                <div class="image-preview-wrapper">
+            <div class="image-display-wrapper">
+                <?php if (!empty($item['image'])): ?>
                     <img id="main_image_preview" src="<?= htmlspecialchars($item['image']) ?>" alt="Main Image Preview" class="image-preview">
-                    <button type="button" class="remove-image-btn" id="remove_main_image">Remove Image</button>
-                </div>
-            <?php else: ?>
-                <img id="main_image_preview" src="" alt="Main Image Preview" class="image-preview" style="display: none;">
-            <?php endif; ?>
+                <?php else: ?>
+                    <img id="main_image_preview" src="" alt="Main Image Preview" class="image-preview" style="display: none;">
+                <?php endif; ?>
+            </div>
             <input type="hidden" name="current_main_image" id="current_main_image" value="<?= htmlspecialchars($item['image'] ?? '') ?>">
         </div>
 
@@ -434,37 +433,7 @@ if ($item) {
             }
         });
 
-        // Image removal functionality
-        const removeMainImageButton = document.getElementById('remove_main_image');
-        if (removeMainImageButton) {
-            removeMainImageButton.addEventListener('click', function() {
-                const mainImageUrlInput = document.getElementById('main_image_url');
-                const mainImageFileInput = document.getElementById('main_image_file');
-                const mainImagePreview = document.getElementById('main_image_preview');
-                const currentMainImageHidden = document.getElementById('current_main_image');
-
-                // Set the URL input to 'REMOVE' to signal the backend
-                if (mainImageUrlInput) {
-                    mainImageUrlInput.value = 'REMOVE';
-                }
-                // Clear the file input
-                if (mainImageFileInput) {
-                    mainImageFileInput.value = '';
-                }
-                // Hide the image preview
-                if (mainImagePreview) {
-                    mainImagePreview.src = '';
-                    mainImagePreview.style.display = 'none';
-                }
-                // Clear the hidden current image path
-                if (currentMainImageHidden) {
-                    currentMainImageHidden.value = '';
-                }
-
-                // Submit the form to trigger the PHP removal logic
-                this.closest('form').submit();
-            });
-        }
+        
     });
 </script>
 
