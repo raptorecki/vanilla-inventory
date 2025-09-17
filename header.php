@@ -1,5 +1,7 @@
 <?php
-session_start(); // Start the session to handle flash messages
+if (session_status() == PHP_SESSION_NONE) {
+    session_start(); // Start the session to handle flash messages
+}
 
 require_once __DIR__ . '/helpers/error_logger.php';
 require_once 'database.php';

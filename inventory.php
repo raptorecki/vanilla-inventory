@@ -19,10 +19,9 @@ try {
     // Include database connection
     require_once 'database.php';
 
-    // Fetch categories, subcategories, and tags
+    // Fetch categories and subcategories
     $categories = $pdo->query("SELECT * FROM inv_categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
     $subcategories = $pdo->query("SELECT * FROM inv_subcategories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-    $tags = $pdo->query("SELECT * FROM inv_tags ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
     $sql = "SELECT * FROM inv_items";
     $params = [];
@@ -85,14 +84,7 @@ try {
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="tags">Tags</label>
-                <select id="tags" name="tags[]" multiple>
-                    <?php foreach ($tags as $tag): ?>
-                        <option value="<?= htmlspecialchars($tag['id']) ?>"><?= htmlspecialchars($tag['name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+            <div class="form-group"><label for="tags">Tags</label><input type="text" id="tags" name="tags" value="<?= htmlspecialchars($_POST['tags'] ?? '') ?>"></div>
 
             <div class="form-group"><label for="quantity">Quantity *</label><input type="number" id="quantity" name="quantity" value="<?= htmlspecialchars($_POST['quantity'] ?? '') ?>" required></div>
             <div class="form-group"><label for="price">Price *</label><input type="number" step="0.01" id="price" name="price" value="<?= htmlspecialchars($_POST['price'] ?? '') ?>" required></div>

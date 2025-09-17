@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_item'])) {
     $name = trim($_POST['name'] ?? '');
     $category_id = trim($_POST['category'] ?? '');
     $subcategory_id = trim($_POST['subcategory'] ?? '');
-    $tags_ids = $_POST['tags'] ?? [];
+    $tags_string = trim($_POST['tags'] ?? ''); // Tags are now a direct string
     $quantity = trim($_POST['quantity'] ?? '');
     $price = trim($_POST['price'] ?? '');
     $number_used = trim($_POST['number_used'] ?? '0');
@@ -37,13 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_item'])) {
             $subcategory_name = $stmt->fetchColumn();
 
             // Get tags names
-            $tags_names = [];
-            if (!empty($tags_ids)) {
-                $stmt = $pdo->prepare("SELECT name FROM inv_tags WHERE id IN (" . implode(',', array_fill(0, count($tags_ids), '?')) . ")");
-                $stmt->execute($tags_ids);
-                $tags_names = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            }
-            $tags_string = implode(', ', $tags_names);
+            // No longer needed as tags are a direct string input
 
             // Insert main item data
             $sql = "INSERT INTO inv_items (name, category, subcategory, tags, quantity, price, number_used, source_link, documentation, image, date_added, date_modified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";

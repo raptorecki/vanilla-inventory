@@ -48,22 +48,26 @@ function handleImageUpload($file_input_name, $url_input_name, $item_id, $current
         }
 
         // Fetch image content
-        $image_content = @file_get_contents($image_url);
+        $image_content = file_get_contents($image_url); // Removed @
         if ($image_content === false) {
-            error_log("Failed to fetch image from URL: " . $image_url);
+            error_log("Failed to fetch image from URL: " . $image_url . " - Check if allow_url_fopen is enabled in php.ini and URL is accessible.");
             return null; // Failed to fetch
         }
 
-        // Determine file extension from URL or content type
+        // Determine file extension from image content
         $file_ext = 'jpg'; // Default to jpg
-        $content_type = get_headers($image_url, 1)['Content-Type'] ?? '';
-        if (is_array($content_type)) {
-            $content_type = $content_type[0];
+        $image_info = @getimagesizefromstring($image_content);
+
+        if ($image_info !== false && isset($image_info['mime'])) {
+            $mime_type = $image_info['mime'];
+            if ($mime_type === 'image/png') $file_ext = 'png';
+            else if ($mime_type === 'image/gif') $file_ext = 'gif';
+            else if ($mime_type === 'image/jpeg') $file_ext = 'jpeg';
+            else if ($mime_type === 'image/webp') $file_ext = 'webp';
+            // Add other image types as needed
+        } else {
+            error_log("Failed to get image info from fetched content for URL: " . $image_url . " - Content might not be a valid image.");
         }
-        if (strpos($content_type, 'image/png') !== false) $file_ext = 'png';
-        else if (strpos($content_type, 'image/gif') !== false) $file_ext = 'gif';
-        else if (strpos($content_type, 'image/jpeg') !== false) $file_ext = 'jpeg';
-        else if (strpos($content_type, 'image/webp') !== false) $file_ext = 'webp';
 
         // Generate unique filename and nested path
         $unique_id = uniqid();
@@ -87,17 +91,30 @@ function handleImageUpload($file_input_name, $url_input_name, $item_id, $current
     }
     // Handle image removal
     else if (isset($_POST[$url_input_name]) && $_POST[$url_input_name] === 'REMOVE') {
+        error_log("Attempting to remove image. Current image path: " . $current_image_path);
         // If there was a current image, delete it from the filesystem
         if (!empty($current_image_path) && file_exists($current_image_path)) {
-            unlink($current_image_path);
-            // Optionally, remove empty parent directories
-            $dir = dirname($current_image_path);
-            if (is_dir($dir) && count(scandir($dir)) == 2) { // . and ..
-                rmdir($dir);
-                $parent_dir = dirname($dir);
-                if (is_dir($parent_dir) && count(scandir($parent_dir)) == 2) {
-                    rmdir($parent_dir);
+            if (unlink($current_image_path)) {
+                error_log("Successfully unlinked image: " . $current_image_path);
+                // Optionally, remove empty parent directories
+                $dir = dirname($current_image_path);
+                if (is_dir($dir) && count(scandir($dir)) == 2) { // . and ..
+                    if (rmdir($dir)) {
+                        error_log("Successfully removed directory: " . $dir);
+                        $parent_dir = dirname($dir);
+                        if (is_dir($parent_dir) && count(scandir($parent_dir)) == 2) {
+                            if (rmdir($parent_dir)) {
+                                error_log("Successfully removed parent directory: " . $parent_dir);
+                            } else {
+                                error_log("Failed to remove parent directory: " . $parent_dir);
+                            }
+                        }
+                    } else {
+                        error_log("Failed to remove directory: " . $dir);
+                    }
                 }
+            } else {
+                error_log("Failed to unlink image: " . $current_image_path . " - Check permissions.");
             }
         }
         $new_image_path = ''; // Set image path to empty in DB

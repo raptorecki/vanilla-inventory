@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.11] - 2025-09-17
 ### Fixed
-- UI: Removed red background from the first column in the inventory table.
+- UI: Changes in inventory table UI design.
 
 
 ## [1.0.10] - 2025-09-17
