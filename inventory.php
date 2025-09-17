@@ -19,6 +19,11 @@ try {
     // Include database connection
     require_once 'database.php';
 
+    // Fetch categories, subcategories, and tags
+    $categories = $pdo->query("SELECT * FROM inv_categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+    $subcategories = $pdo->query("SELECT * FROM inv_subcategories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+    $tags = $pdo->query("SELECT * FROM inv_tags ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+
     $sql = "SELECT * FROM inv_items";
     $params = [];
 
@@ -59,17 +64,41 @@ try {
                 <div class="error" style="grid-column: 1 / -1;"><?= htmlspecialchars($add_form_error) ?></div>
             <?php endif; ?>
             <div class="form-group form-group-name"><label for="name">Name *</label><input type="text" id="name" name="name" value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required></div>
-            <div class="form-group"><label for="category">Category *</label><input type="text" id="category" name="category" value="<?= htmlspecialchars($_POST['category'] ?? '') ?>" required></div>
-            <div class="form-group"><label for="subcategory">Subcategory *</label><input type="text" id="subcategory" name="subcategory" value="<?= htmlspecialchars($_POST['subcategory'] ?? '') ?>" required></div>
-            <div class="form-group"><label for="tags">Tags *</label><input type="text" id="tags" name="tags" value="<?= htmlspecialchars($_POST['tags'] ?? '') ?>" required></div>
+            
+            <div class="form-group">
+                <label for="category">Category *</label>
+                <select id="category" name="category" required>
+                    <option value="">Select a Category</option>
+                    <?php foreach ($categories as $cat): ?>
+                        <option value="<?= htmlspecialchars($cat['id']) ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="subcategory">Subcategory *</label>
+                <select id="subcategory" name="subcategory" required>
+                    <option value="">Select a Subcategory</option>
+                    <?php foreach ($subcategories as $subcat): ?>
+                        <option value="<?= htmlspecialchars($subcat['id']) ?>" data-category-id="<?= htmlspecialchars($subcat['category_id']) ?>"><?= htmlspecialchars($subcat['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <select id="tags" name="tags[]" multiple>
+                    <?php foreach ($tags as $tag): ?>
+                        <option value="<?= htmlspecialchars($tag['id']) ?>"><?= htmlspecialchars($tag['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
             <div class="form-group"><label for="quantity">Quantity *</label><input type="number" id="quantity" name="quantity" value="<?= htmlspecialchars($_POST['quantity'] ?? '') ?>" required></div>
             <div class="form-group"><label for="price">Price *</label><input type="number" step="0.01" id="price" name="price" value="<?= htmlspecialchars($_POST['price'] ?? '') ?>" required></div>
-            <div class="form-group"><label for="number_used">Number Used *</label><input type="number" id="number_used" name="number_used" value="<?= htmlspecialchars($_POST['number_used'] ?? '') ?>" required></div>
+            <div class="form-group"><label for="number_used">Number Used *</label><input type="number" id="number_used" name="number_used" value="0" required></div>
             <div class="form-group"><label for="source_link">Source Link</label><input type="url" id="source_link" name="source_link" value="<?= htmlspecialchars($_POST['source_link'] ?? '') ?>"></div>
-            <div class="form-group"><label for="documentation">Documentation Link</label><input type="url" id="documentation" name="documentation" value="<?= htmlspecialchars($_POST['documentation'] ?? '') ?>"></div>
-            
-            <div class="form-group"><label for="main_image">Main Image</label><input type="file" id="main_image" name="main_image"></div>
-            <div class="form-group"><label for="additional_images">Additional Images</label><input type="file" id="additional_images" name="additional_images[]" multiple></div>
+            <div class="form-group"><label for="main_image_url">Main Image URL</label><input type="url" id="main_image_url" name="main_image_url" placeholder="Enter image URL"></div>
         </div>
         <div class="form-actions">
             <button type="submit">Add Item</button>
@@ -77,6 +106,28 @@ try {
         </div>
     </form>
 </details>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('category');
+    const subcategorySelect = document.getElementById('subcategory');
+    const subcategoryOptions = Array.from(subcategorySelect.options);
+
+    categorySelect.addEventListener('change', function() {
+        const categoryId = this.value;
+        
+        // Clear current options
+        subcategorySelect.innerHTML = '<option value="">Select a Subcategory</option>';
+
+        // Filter and add relevant options
+        subcategoryOptions.forEach(function(option) {
+            if (option.dataset.categoryId === categoryId || option.value === '') {
+                subcategorySelect.appendChild(option.cloneNode(true));
+            }
+        });
+    });
+});
+</script>
 
 <?php if ($error_message): ?>
     <p class="error"><?= htmlspecialchars($error_message) ?></p>

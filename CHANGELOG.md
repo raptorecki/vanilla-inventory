@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [1.0.9] - 2025-09-07
-### Added
-- Feature: Added "Diodes" table to `components.php` (category ID 6, subcategories 51, 52).
-### Fixed
-- Bug: Confirmed "Zener" subcategory display issue was due to database typo, now resolved by user.
+## [1.0.10] - 2025-09-17
+### Changed
+- Refactored "Add New Item" form in `inventory.php` to improve user experience and functionality.
+- Replaced text inputs for "Category" and "Subcategory" with dropdown menus.
+- Implemented a multi-select dropdown for "Tags".
+- Set the default value of "Number Used" to 0.
+- Removed "Documentation Link", "Main Image", and "Additional Image" fields.
+- Added a "Main Image URL" field for importing images from a URL.
+- Created `helpers.php` and centralized the `handleImageUpload` function.
+- Updated `item_add.php` to process the new form data and use the centralized image upload function.
 
 
 ## [1.0.8] - 2025-09-07
