@@ -134,20 +134,38 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php elseif (empty($items)): ?>
     <p>No items found matching your criteria.</p>
 <?php else: ?>
+    <?php
+    $headers = [
+        'id' => 'ID', 'name' => 'Name', 'category' => 'Category', 'subcategory' => 'Sub-category',
+        'tags' => 'Tags', 'quantity' => 'Quantity', 'price' => 'Price', 'number_used' => 'Used',
+        'source_link' => 'Source', 'date_added' => 'Added', 'date_modified' => 'Modified',
+        'actions' => 'Actions'
+    ];
+    
+    ?>
     <table>
+        <colgroup>
+            <col style="width: 5%;"> <!-- ID -->
+            <col style="width: 25%;"> <!-- Name -->
+            <col style="width: 10%;"> <!-- Category -->
+            <col style="width: 10%;"> <!-- Sub-category -->
+            <col style="width: 10%;"> <!-- Tags -->
+            <col style="width: 5%;"> <!-- Quantity -->
+            <col style="width: 5%;"> <!-- Price -->
+            <col style="width: 5%;"> <!-- Used -->
+            <col style="width: 5%;"> <!-- Source -->
+            <col style="width: 10%;"> <!-- Added -->
+            <col style="width: 10%;"> <!-- Modified -->
+            <col style="width: 10%;"> <!-- Actions -->
+        </colgroup>
         <thead>
             <tr>
                 <?php
-                $headers = [
-                    'id' => 'ID', 'name' => 'Name', 'category' => 'Category', 'subcategory' => 'Sub-category',
-                    'tags' => 'Tags', 'quantity' => 'Quantity', 'price' => 'Price', 'number_used' => 'Used',
-                    'source_link' => 'Source', 'date_added' => 'Added', 'date_modified' => 'Modified',
-                    'actions' => 'Actions'
-                ];
                 foreach ($headers as $col => $title):
                     $is_sorted_column = ($sort_column === $col);
                     $next_direction = ($is_sorted_column && $sort_direction === 'asc') ? 'desc' : 'asc';
                     $sort_indicator = $is_sorted_column ? (($sort_direction === 'asc') ? ' &#9650;' : ' &#9660;') : ' ';
+                    $class = $class_map[$col] ?? '';
                 ?>
                     <th><a href="?sort=<?= $col ?>&dir=<?= $next_direction ?>&search=<?= htmlspecialchars($search_term) ?>"><?= $title ?></a><?= $sort_indicator ?></th>
                 <?php endforeach; ?>
@@ -158,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ?>
                 <tr>
                     <?php foreach ($headers as $col => $title):
+                        $class = $class_map[$col] ?? '';
                         ?>
                         <td>
                             <?php
